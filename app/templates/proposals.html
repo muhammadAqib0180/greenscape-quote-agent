@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenscape Pro — Proposals</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green-900: #1a3a2a;
+            --green-800: #1e4d35;
+            --green-700: #2d6a4f;
+            --green-600: #40916c;
+            --green-400: #74c69d;
+            --green-100: #d8f3dc;
+            --gray-900: #0f1117;
+            --gray-800: #1c2030;
+            --gray-700: #252a3a;
+            --gray-600: #3a4060;
+            --gray-400: #8892a4;
+            --gray-200: #d1d9e6;
+            --white: #ffffff;
+            --warning: #e9c46a;
+            --danger:  #e76f51;
+            --danger-bg: rgba(231,111,81,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--gray-900);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            background: var(--gray-800);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 10px;
+            font-weight: 700; font-size: 1rem;
+            color: var(--white); text-decoration: none;
+        }
+        .nav-logo {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--green-700), var(--green-400));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+        .nav-link {
+            color: var(--gray-400); text-decoration: none;
+            font-size: 0.875rem; font-weight: 500;
+            padding: 6px 14px; border-radius: 8px; transition: all 0.2s;
+        }
+        .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+        .nav-link.active { color: var(--green-400); background: rgba(82,183,136,0.1); }
+
+        main {
+            flex: 1;
+            max-width: 860px; width: 100%;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .page-header h1 {
+            font-size: 1.75rem; font-weight: 700;
+            color: var(--white); letter-spacing: -0.02em;
+        }
+        .page-header p { color: var(--gray-400); font-size: 0.875rem; margin-top: 4px; }
+
+        .btn-new {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, var(--green-700), var(--green-600));
+            color: var(--white); border: none; border-radius: 10px;
+            font-family: inherit; font-size: 0.875rem; font-weight: 600;
+            cursor: pointer; text-decoration: none;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .btn-new:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(64,145,108,0.3);
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--gray-800);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+        .stat-label { font-size: 0.75rem; color: var(--gray-400); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--white); }
+        .stat-value.green { color: var(--green-400); }
+        .stat-value.warn  { color: var(--warning); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            color: var(--gray-400);
+        }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 1.1rem; color: var(--white); margin-bottom: 8px; }
+        .empty-state p { font-size: 0.875rem; margin-bottom: 24px; }
+
+        /* Proposal card */
+        .proposal-card {
+            background: var(--gray-800);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .proposal-card:hover { border-color: rgba(255,255,255,0.12); }
+        .proposal-card.error { border-color: rgba(231,111,81,0.35); }
+        .proposal-card.approved { border-color: rgba(116,198,157,0.3); }
+        .proposal-card.rejected { opacity: 0.6; }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .card-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .card-title { font-size: 1rem; font-weight: 600; color: var(--white); }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .badge-draft    { background: rgba(233,196,106,0.15); color: var(--warning); }
+        .badge-approved { background: rgba(116,198,157,0.15); color: var(--green-400); }
+        .badge-rejected { background: rgba(138,138,138,0.15); color: var(--gray-400); }
+        .badge-error    { background: var(--danger-bg); color: var(--danger); }
+        .badge-render   { background: rgba(231,111,81,0.12); color: var(--danger); }
+
+        .card-meta { font-size: 0.78rem; color: var(--gray-400); }
+
+        .card-body { padding: 0 22px 20px; }
+
+        .summary-text {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .line-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            margin-bottom: 16px;
+        }
+        .line-items-table th {
+            text-align: left;
+            color: var(--gray-400);
+            font-weight: 500;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0 10px 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .line-items-table td {
+            padding: 8px 10px 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--gray-200);
+            vertical-align: middle;
+        }
+        .line-items-table tr:last-child td { border-bottom: none; }
+        .line-items-table .amount { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+
+        .subtotal-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .subtotal-label { font-size: 0.875rem; font-weight: 600; color: var(--white); }
+        .subtotal-value { font-size: 1.1rem; font-weight: 700; color: var(--green-400); font-variant-numeric: tabular-nums; }
+
+        .flags-list {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            margin-bottom: 16px;
+        }
+        .flag-chip {
+            padding: 3px 10px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 500;
+            background: rgba(233,196,106,0.1); color: var(--warning);
+            border: 1px solid rgba(233,196,106,0.2);
+        }
+
+        .card-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .btn-approve, .btn-reject {
+            padding: 9px 18px; border-radius: 8px;
+            font-family: inherit; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-approve {
+            background: linear-gradient(135deg, var(--green-700), var(--green-600));
+            color: var(--white);
+        }
+        .btn-approve:hover {
+            background: linear-gradient(135deg, var(--green-600), var(--green-400));
+            transform: translateY(-1px);
+        }
+        .btn-reject {
+            background: rgba(255,255,255,0.06);
+            color: var(--gray-400);
+        }
+        .btn-reject:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+
+        .error-block {
+            background: var(--danger-bg);
+            border: 1px solid rgba(231,111,81,0.2);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+        .error-block .error-title {
+            font-size: 0.8rem; font-weight: 600; color: var(--danger);
+            margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+        }
+        .error-block .error-msg { font-size: 0.8rem; color: var(--gray-400); line-height: 1.5; }
+        .error-block .raw-notes {
+            margin-top: 10px;
+            font-size: 0.78rem; color: var(--gray-400);
+            font-style: italic; line-height: 1.6;
+        }
+
+        .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 0 22px; }
+
+        footer {
+            text-align: center; padding: 20px;
+            font-size: 0.78rem; color: var(--gray-600);
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-brand">
+            <div class="nav-logo">🌿</div>
+            Greenscape Pro
+        </a>
+        <div style="display:flex;gap:4px;">
+            <a href="/" class="nav-link">New Quote</a>
+            <a href="/proposals" class="nav-link active">Proposals</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>Proposals</h1>
+                <p>Review AI-generated drafts. Nothing sends without your approval.</p>
+            </div>
+            <a href="/" class="btn-new">＋ New Submission</a>
+        </div>
+
+        <!-- Stats -->
+        {% set total = proposals | length %}
+        {% set drafts = proposals | selectattr("status", "equalto", "draft") | list | length %}
+        {% set approved = proposals | selectattr("status", "equalto", "approved") | list | length %}
+        {% set total_value = proposals | selectattr("subtotal", "ne", none) | sum(attribute="subtotal") %}
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Proposals</div>
+                <div class="stat-value">{{ total }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Review</div>
+                <div class="stat-value warn">{{ drafts }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Approved</div>
+                <div class="stat-value green">{{ approved }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pipeline Value</div>
+                <div class="stat-value green">${{ "{:,.0f}".format(total_value) }}</div>
+            </div>
+        </div>
+
+        <!-- Proposal list -->
+        {% if proposals %}
+            {% for p in proposals %}
+            <div class="proposal-card {{ 'error' if p.parse_error else p.status }}">
+                <div class="card-header">
+                    <div class="card-title-row">
+                        <span class="card-title">{{ p.client_name }}</span>
+                        {% if p.parse_error %}
+                            <span class="badge badge-error">⚠ Parse Error</span>
+                        {% else %}
+                            <span class="badge badge-{{ p.status }}">
+                                {% if p.status == 'draft' %}● Draft
+                                {% elif p.status == 'approved' %}✓ Approved
+                                {% else %}✕ Rejected{% endif %}
+                            </span>
+                        {% endif %}
+                        {% if p.needs_render %}
+                            <span class="badge badge-render">🎨 Render Required</span>
+                        {% endif %}
+                    </div>
+                    <span class="card-meta">{{ p.created_at[:10] if p.created_at else '' }}</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="card-body" style="padding-top:18px;">
+                    {% if p.parse_error %}
+                        <div class="error-block">
+                            <div class="error-title">⚠ AI parsing failed — manual review required</div>
+                            <div class="error-msg">{{ p.parse_error }}</div>
+                            <div class="raw-notes">Raw notes: {{ p.raw_notes }}</div>
+                        </div>
+                    {% else %}
+                        <p class="summary-text">{{ p.extracted_items.notes_summary }}</p>
+
+                        {% if p.extracted_items.line_items %}
+                        <table class="line-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Unit Price</th>
+                                    <th style="text-align:right;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in p.extracted_items.line_items %}
+                                <tr>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>${{ "{:,.2f}".format(item.unit_price) }}</td>
+                                    <td class="amount">${{ "{:,.2f}".format(item.line_total) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+
+                        <div class="subtotal-row">
+                            <span class="subtotal-label">Proposal Subtotal</span>
+                            <span class="subtotal-value">${{ "{:,.2f}".format(p.subtotal) }}</span>
+                        </div>
+
+                        {% if p.extracted_items.special_conditions %}
+                        <div class="flags-list">
+                            {% for cond in p.extracted_items.special_conditions %}
+                            <span class="flag-chip">⚑ {{ cond }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if p.status == 'draft' %}
+                        <div class="card-actions">
+                            <form action="/proposals/{{ p.id }}/approve" method="post" style="display:inline">
+                                <button type="submit" class="btn-approve">✓ Approve & Notify Team</button>
+                            </form>
+                            <form action="/proposals/{{ p.id }}/reject" method="post" style="display:inline">
+                                <button type="submit" class="btn-reject">✕ Reject</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="icon">📋</div>
+                <h3>No proposals yet</h3>
+                <p>Submit your first set of site-walk notes to generate a proposal draft.</p>
+                <a href="/" class="btn-new">Start New Submission</a>
+            </div>
+        {% endif %}
+    </main>
+
+    <footer>Greenscape Pro · Quote Accelerator · All proposals require Marcus's approval before sending</footer>
+</body>
+</html>

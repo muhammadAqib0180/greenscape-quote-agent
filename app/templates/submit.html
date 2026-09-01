@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenscape Pro — Quote Accelerator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green-900: #1a3a2a;
+            --green-800: #1e4d35;
+            --green-700: #2d6a4f;
+            --green-600: #40916c;
+            --green-400: #74c69d;
+            --green-100: #d8f3dc;
+            --green-50:  #f0faf3;
+            --gray-900: #0f1117;
+            --gray-800: #1c2030;
+            --gray-700: #252a3a;
+            --gray-600: #3a4060;
+            --gray-400: #8892a4;
+            --gray-200: #d1d9e6;
+            --gray-100: #f0f4f8;
+            --white: #ffffff;
+            --accent:  #52b788;
+            --warning: #e9c46a;
+            --danger:  #e76f51;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--gray-900);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            background: var(--gray-800);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .nav-logo {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--green-700), var(--green-400));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+        .nav-link {
+            color: var(--gray-400);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+        .nav-link.active { color: var(--green-400); background: rgba(82,183,136,0.1); }
+
+        /* ─── MAIN ─── */
+        main {
+            flex: 1;
+            max-width: 720px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 36px;
+        }
+        .page-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.02em;
+        }
+        .page-header p {
+            color: var(--gray-400);
+            font-size: 0.9rem;
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        /* ─── CARD ─── */
+        .card {
+            background: var(--gray-800);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        /* ─── FORM ─── */
+        .field { margin-bottom: 24px; }
+        .field label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-400);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .field input,
+        .field textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--gray-700);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            color: var(--white);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            resize: vertical;
+        }
+        .field input::placeholder,
+        .field textarea::placeholder { color: var(--gray-600); }
+        .field input:focus,
+        .field textarea:focus {
+            border-color: var(--green-600);
+            box-shadow: 0 0 0 3px rgba(64,145,108,0.15);
+        }
+        .field textarea { height: 220px; line-height: 1.6; }
+
+        .field-hint {
+            font-size: 0.78rem;
+            color: var(--gray-400);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        /* ─── BUTTON ─── */
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--green-700), var(--green-600));
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.01em;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--green-600), var(--green-400));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(64,145,108,0.3);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* ─── LOADING ─── */
+        .btn-primary .spinner {
+            display: none;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── EXAMPLE BOX ─── */
+        .example-box {
+            background: var(--gray-700);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-top: 24px;
+        }
+        .example-box-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--green-400);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 8px;
+        }
+        .example-box p {
+            font-size: 0.82rem;
+            color: var(--gray-400);
+            line-height: 1.65;
+            font-style: italic;
+        }
+        .example-box .use-example {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.78rem;
+            color: var(--green-400);
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+        }
+        .example-box .use-example:hover { color: var(--green-300); }
+
+        /* ─── FOOTER ─── */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.78rem;
+            color: var(--gray-600);
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-brand">
+            <div class="nav-logo">🌿</div>
+            Greenscape Pro
+        </a>
+        <div style="display:flex;gap:4px;">
+            <a href="/" class="nav-link active">New Quote</a>
+            <a href="/proposals" class="nav-link">Proposals</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="page-header">
+            <h1>Site-Walk Notes → Proposal</h1>
+            <p>Paste your raw notes from the site walk. The AI parses them against the pricing catalog and generates a structured draft for your review — no proposal leaves without your approval.</p>
+        </div>
+
+        <div class="card">
+            <form id="submitForm" action="/submit" method="post" onsubmit="handleSubmit(this)">
+                <div class="field">
+                    <label for="client_name">Client Name</label>
+                    <input
+                        type="text"
+                        id="client_name"
+                        name="client_name"
+                        required
+                        placeholder="e.g. Johnson Residence"
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="raw_notes">Site-Walk Notes</label>
+                    <textarea
+                        id="raw_notes"
+                        name="raw_notes"
+                        required
+                        placeholder="Paste your raw notes here — messy is fine. The AI handles the cleanup."
+                    ></textarea>
+                    <p class="field-hint">Write exactly how you'd write them in the field. Don't clean up for the AI — the point is to save you that step.</p>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <span class="spinner" id="spinner"></span>
+                    <span id="btnText">Generate Proposal Draft</span>
+                </button>
+            </form>
+
+            <div class="example-box">
+                <div class="example-box-label">Example Input</div>
+                <p id="exampleText">johnson family - backyard reno. wants big patio ~400sqft premium pavers. standard fire pit. pergola - they liked the cedar one in our portfolio. 3 irrigation zones for new beds. landscape lighting around patio maybe 8 fixtures. HOA approval req'd - they back onto the street. budget feels like 50s maybe 60k range.</p>
+                <button class="use-example" onclick="fillExample()">Use this example →</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>Greenscape Pro · Quote Accelerator · All proposals require Marcus's approval before sending</footer>
+
+    <script>
+        function fillExample() {
+            document.getElementById('client_name').value = 'Johnson Residence';
+            document.getElementById('raw_notes').value = document.getElementById('exampleText').textContent;
+        }
+
+        function handleSubmit(form) {
+            const btn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('spinner');
+            const btnText = document.getElementById('btnText');
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            btnText.textContent = 'Generating draft…';
+        }
+    </script>
+</body>
+</html>
