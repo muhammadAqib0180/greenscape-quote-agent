@@ -16,7 +16,7 @@ RENDER_THRESHOLD = float(os.environ.get("RENDER_THRESHOLD", 30000))
 
 @app.get("/")
 def home(request: Request):
-    return templates.TemplateResponse("submit.html", {"request": request})
+    return templates.TemplateResponse(request, "submit.html")
 
 
 @app.post("/submit")
@@ -53,7 +53,7 @@ def submit_notes(request: Request, client_name: str = Form(...), raw_notes: str 
 def view_proposals(request: Request):
     proposals = db.list_proposals()
     return templates.TemplateResponse(
-        "proposals.html", {"request": request, "proposals": proposals}
+        request, "proposals.html", {"proposals": proposals}
     )
 
 
