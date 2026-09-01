@@ -54,7 +54,7 @@ def parse_notes_to_proposal(
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.6-flash",
             contents=full_prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
