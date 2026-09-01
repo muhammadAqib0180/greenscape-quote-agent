@@ -1,6 +1,7 @@
 import json
 import os
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from pydantic import ValidationError
 
 from app.models import ParsedProposal
@@ -41,20 +42,23 @@ def parse_notes_to_proposal(
     client_name: str, raw_notes: str, pricing_catalog: list[dict]
 ) -> tuple[ParsedProposal | None, str | None]:
     """Returns (parsed_proposal, error_message). One of the two is always None."""
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
     catalog_str = json.dumps(pricing_catalog, indent=2)
-    user_prompt = (
+    full_prompt = (
+        f"{SYSTEM_PROMPT}\n\n"
         f"Client name: {client_name}\n\n"
         f"Site-walk notes:\n{raw_notes}\n\n"
         f"Pricing catalog:\n{catalog_str}"
     )
 
     try:
-        response = model.generate_content(
-            [SYSTEM_PROMPT, user_prompt],
-            generation_config={"response_mime_type": "application/json"},
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=full_prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+            ),
         )
         raw_json = response.text
     except Exception as e:
