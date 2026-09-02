@@ -61,3 +61,8 @@ Marcus's stated priority is directionally right but operationally vague. "Speed 
 
 ### What I excluded, and why
 **The marketing/content agent** (Marcus's stated #4). He states outright, twice, that lead volume is not his constraint — ROAS is healthy at 4–4.5x and he "cannot keep up with the leads I have." Building a marketing agent here optimizes a metric that isn't the bottleneck. It's a clean, evidence-backed "no."
+
+### System Architecture Trade-offs & Scaling Bottlenecks
+- **What breaks first at scale:** Full pricing catalog in-context prompting works reliably up to ~200 items. Beyond ~500 items, token costs rise, latency increases, and LLM attention drift degrades SKU matching accuracy.
+- **Production solution for scale:** Upgrade from full catalog in-context prompting to a two-stage Vector RAG pipeline (using OpenAI `text-embedding-3-small` or pgvector in Supabase) to dynamically retrieve top 15 relevant line items before generation.
+- **What I'd do with more time:** Implement direct GoHighLevel (GHL) SMS API webhooks for native customer proposal delivery, and line-item confidence scoring to auto-highlight uncertain estimates for Marcus's review.
