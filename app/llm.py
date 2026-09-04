@@ -1,8 +1,11 @@
 import json
+import logging
 import os
 from google import genai
 from google.genai import types
 from pydantic import ValidationError
+
+logger = logging.getLogger(__name__)
 
 from app.models import ParsedProposal
 
@@ -62,6 +65,7 @@ def parse_notes_to_proposal(
         )
         raw_json = response.text
     except Exception as e:
+        logger.error("LLM call failed for client=%s: %s", client_name, e)
         return None, f"LLM call failed: {e}"
 
     try:
@@ -71,4 +75,5 @@ def parse_notes_to_proposal(
     except (json.JSONDecodeError, ValidationError) as e:
         # Guardrail: malformed or off-schema output never gets auto-processed.
         # It's stored with the error so a human can review and re-run.
+        logger.warning("LLM output validation failed for client=%s: %s", client_name, e)
         return None, f"Validation failed: {e}"

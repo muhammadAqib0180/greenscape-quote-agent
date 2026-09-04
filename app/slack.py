@@ -1,5 +1,8 @@
+import logging
 import os
 import httpx
+
+logger = logging.getLogger(__name__)
 
 
 def notify_proposal_approved(proposal: dict) -> None:
@@ -24,5 +27,5 @@ def notify_proposal_approved(proposal: dict) -> None:
 
     try:
         httpx.post(webhook_url, json={"text": text}, timeout=5)
-    except httpx.HTTPError:
-        pass
+    except httpx.HTTPError as e:
+        logger.warning("Slack notify failed: %s", e)

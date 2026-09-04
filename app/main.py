@@ -1,12 +1,19 @@
+import logging
 import os
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 
 from app import db, llm, slack
 
 load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s %(name)s %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Greenscape Pro - Quote Accelerator")
 templates = Jinja2Templates(directory="app/templates")
@@ -72,4 +79,16 @@ def reject_proposal(proposal_id: int):
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    """Liveness + Supabase connectivity check.
+    Returns 200 {status: ok} when healthy, 503 when Supabase is unreachable.
+    In test mode (APP_ENV=test) always returns ok without a real DB call.
+    """
+    if os.environ.get("APP_ENV") == "test":
+        return {"status": "ok"}
+    try:
+        # Lightweight connectivity check — fetches 0 rows
+        db.get_client().table("proposals").select("id").limit(1).execute()
+        return {"status": "ok"}
+    except Exception as e:
+        logger.error("Health check: Supabase unreachable: %s", e)
+        return JSONResponse(status_code=503, content={"status": "error", "detail": "database unreachable"})
