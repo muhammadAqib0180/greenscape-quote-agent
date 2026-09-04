@@ -55,3 +55,24 @@ line item against the value it unlocks.
 - Actual GHL API integration for sending the approved proposal, instead of the
   Slack notification standing in for "ready to send"
 - A confidence score per line item so Marcus can spot-check only the shaky ones
+
+## Testing
+
+The full test suite runs **without any API keys or live services** — all external
+calls are replaced by an in-memory fake backend and mocked LLM/Slack.
+
+Install test dependencies and run:
+
+```bash
+pip install -r requirements.txt pytest pytest-cov
+APP_ENV=test pytest
+```
+
+To see coverage:
+```bash
+APP_ENV=test pytest --cov=app --cov-report=term-missing
+```
+
+`APP_ENV=test` activates `app/db_fake.py` — an in-memory drop-in for Supabase.
+No `SUPABASE_URL`, `SUPABASE_KEY`, `GEMINI_API_KEY`, or `SLACK_WEBHOOK_URL` are
+needed when running tests.
