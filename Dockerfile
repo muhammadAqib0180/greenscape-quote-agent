@@ -46,8 +46,10 @@ RUN groupadd -g 10001 appgroup && \
 # Copy installed site-packages from builder
 COPY --from=builder /install /install
 
-# Copy application source code
+# Copy application source code and start script
 COPY --chown=appuser:appgroup app/ app/
+COPY --chown=appuser:appgroup start.sh start.sh
+RUN chmod +x start.sh
 
 # Switch to non-root security context
 USER appuser
@@ -57,5 +59,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:8000/health || exit 1
 
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["/app/start.sh"]
 

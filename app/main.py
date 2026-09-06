@@ -243,3 +243,14 @@ def health():
         return JSONResponse(status_code=503, content={"status": "error", "detail": "database unreachable"})
 
 
+if __name__ == "__main__":
+    import uvicorn
+    raw_port = os.environ.get("PORT", "8000")
+    try:
+        port_num = int("".join(filter(str.isdigit, str(raw_port))) or "8000")
+    except ValueError:
+        port_num = 8000
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port_num)
+
+
+
