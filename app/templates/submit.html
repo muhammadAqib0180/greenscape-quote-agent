@@ -3,36 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Greenscape Pro — Quote Accelerator</title>
+    <title>QuoteFlow Pro — AI Site-Walk Notes to Proposal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --green-900: #1a3a2a;
-            --green-800: #1e4d35;
-            --green-700: #2d6a4f;
-            --green-600: #40916c;
-            --green-400: #74c69d;
-            --green-100: #d8f3dc;
-            --green-50:  #f0faf3;
-            --gray-900: #0f1117;
-            --gray-800: #1c2030;
-            --gray-700: #252a3a;
-            --gray-600: #3a4060;
-            --gray-400: #8892a4;
-            --gray-200: #d1d9e6;
-            --gray-100: #f0f4f8;
+            --brand-primary: #10b981;
+            --brand-dark: #059669;
+            --brand-accent: #34d399;
+            --bg-dark: #090d16;
+            --bg-card: #131b2e;
+            --bg-card-hover: #1c2742;
+            --gray-700: #263352;
+            --gray-400: #94a3b8;
+            --gray-200: #e2e8f0;
             --white: #ffffff;
-            --accent:  #52b788;
-            --warning: #e9c46a;
-            --danger:  #e76f51;
+            --warning: #f59e0b;
         }
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--gray-900);
+            background: var(--bg-dark);
             color: var(--white);
             min-height: 100vh;
             display: flex;
@@ -41,46 +34,48 @@
 
         /* ─── NAV ─── */
         nav {
-            background: var(--gray-800);
+            background: var(--bg-card);
             border-bottom: 1px solid rgba(255,255,255,0.06);
             padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 60px;
+            height: 64px;
         }
         .nav-brand {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-weight: 700;
-            font-size: 1rem;
+            font-weight: 800;
+            font-size: 1.1rem;
             color: var(--white);
             text-decoration: none;
+            letter-spacing: -0.02em;
         }
         .nav-logo {
-            width: 32px; height: 32px;
-            background: linear-gradient(135deg, var(--green-700), var(--green-400));
-            border-radius: 8px;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--brand-dark), var(--brand-accent));
+            border-radius: 9px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            box-shadow: 0 0 12px rgba(16,185,129,0.3);
         }
         .nav-link {
             color: var(--gray-400);
             text-decoration: none;
             font-size: 0.875rem;
-            font-weight: 500;
-            padding: 6px 14px;
+            font-weight: 600;
+            padding: 8px 16px;
             border-radius: 8px;
             transition: all 0.2s;
         }
         .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
-        .nav-link.active { color: var(--green-400); background: rgba(82,183,136,0.1); }
+        .nav-link.active { color: var(--brand-accent); background: rgba(16,185,129,0.12); }
 
         /* ─── MAIN ─── */
         main {
             flex: 1;
-            max-width: 720px;
+            max-width: 760px;
             width: 100%;
             margin: 0 auto;
             padding: 48px 24px;
@@ -90,78 +85,80 @@
             margin-bottom: 36px;
         }
         .page-header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
+            font-size: 1.85rem;
+            font-weight: 800;
             color: var(--white);
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
         }
         .page-header p {
             color: var(--gray-400);
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             margin-top: 6px;
             line-height: 1.6;
         }
 
         /* ─── CARD ─── */
         .card {
-            background: var(--gray-800);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 16px;
-            padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 36px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
         /* ─── FORM ─── */
         .field { margin-bottom: 24px; }
         .field label {
             display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.78rem;
+            font-weight: 700;
             color: var(--gray-400);
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
             margin-bottom: 8px;
         }
         .field input,
         .field textarea {
             width: 100%;
-            padding: 12px 16px;
-            background: var(--gray-700);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
             color: var(--white);
             font-family: inherit;
             font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
             resize: vertical;
         }
         .field input::placeholder,
-        .field textarea::placeholder { color: var(--gray-600); }
+        .field textarea::placeholder { color: var(--gray-400); opacity: 0.6; }
         .field input:focus,
         .field textarea:focus {
-            border-color: var(--green-600);
-            box-shadow: 0 0 0 3px rgba(64,145,108,0.15);
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(16,185,129,0.15);
+            background: rgba(255,255,255,0.06);
         }
-        .field textarea { height: 220px; line-height: 1.6; }
+        .field textarea { height: 210px; line-height: 1.6; }
 
         .field-hint {
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: var(--gray-400);
-            margin-top: 6px;
+            margin-top: 8px;
             line-height: 1.5;
         }
 
         /* ─── BUTTON ─── */
         .btn-primary {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--green-700), var(--green-600));
+            padding: 15px;
+            background: linear-gradient(135deg, var(--brand-dark), var(--brand-primary));
             color: var(--white);
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-family: inherit;
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 0.98rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -169,18 +166,19 @@
             justify-content: center;
             gap: 8px;
             letter-spacing: 0.01em;
+            box-shadow: 0 4px 20px rgba(16,185,129,0.3);
         }
         .btn-primary:hover {
-            background: linear-gradient(135deg, var(--green-600), var(--green-400));
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
             transform: translateY(-1px);
-            box-shadow: 0 4px 20px rgba(64,145,108,0.3);
+            box-shadow: 0 6px 24px rgba(16,185,129,0.45);
         }
         .btn-primary:active { transform: translateY(0); }
 
-        /* ─── LOADING ─── */
+        /* ─── LOADING SPINNER ─── */
         .btn-primary .spinner {
             display: none;
-            width: 16px; height: 16px;
+            width: 18px; height: 18px;
             border: 2px solid rgba(255,255,255,0.3);
             border-top-color: white;
             border-radius: 50%;
@@ -188,48 +186,45 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ─── EXAMPLE BOX ─── */
-        .example-box {
-            background: var(--gray-700);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 10px;
-            padding: 16px 18px;
-            margin-top: 24px;
+        /* ─── PRESETS ─── */
+        .preset-section {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
         }
-        .example-box-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--green-400);
-            text-transform: uppercase;
-            letter-spacing: 0.07em;
-            margin-bottom: 8px;
-        }
-        .example-box p {
-            font-size: 0.82rem;
-            color: var(--gray-400);
-            line-height: 1.65;
-            font-style: italic;
-        }
-        .example-box .use-example {
-            display: inline-block;
-            margin-top: 10px;
+        .preset-title {
             font-size: 0.78rem;
-            color: var(--green-400);
-            cursor: pointer;
-            text-decoration: underline;
-            background: none;
-            border: none;
-            padding: 0;
-            font-family: inherit;
+            font-weight: 700;
+            color: var(--brand-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 12px;
         }
-        .example-box .use-example:hover { color: var(--green-300); }
+        .preset-chips {
+            display: flex; gap: 8px; flex-wrap: wrap;
+        }
+        .preset-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--gray-200);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover {
+            background: rgba(16,185,129,0.15);
+            border-color: rgba(16,185,129,0.3);
+            color: var(--brand-accent);
+        }
 
-        /* ─── FOOTER ─── */
         footer {
             text-align: center;
-            padding: 20px;
-            font-size: 0.78rem;
-            color: var(--gray-600);
+            padding: 24px;
+            font-size: 0.8rem;
+            color: var(--gray-400);
             border-top: 1px solid rgba(255,255,255,0.04);
         }
     </style>
@@ -237,66 +232,88 @@
 <body>
     <nav>
         <a href="/" class="nav-brand">
-            <div class="nav-logo">🌿</div>
-            Greenscape Pro
+            <div class="nav-logo">⚡</div>
+            QuoteFlow Pro
         </a>
         <div style="display:flex;gap:4px;">
             <a href="/" class="nav-link active">New Quote</a>
             <a href="/proposals" class="nav-link">Proposals</a>
+            <a href="/catalog" class="nav-link">Catalog</a>
+            <a href="/analytics" class="nav-link">Analytics</a>
         </div>
     </nav>
 
     <main>
         <div class="page-header">
-            <h1>Site-Walk Notes → Proposal</h1>
-            <p>Paste your raw notes from the site walk. The AI parses them against the pricing catalog and generates a structured draft for your review — no proposal leaves without your approval.</p>
+            <h1>Site-Walk Notes → Proposal Draft</h1>
+            <p>Paste informal field notes from your site walk. The AI maps scope against your pricing catalog, evaluates confidence ratings, and builds an itemized draft in seconds.</p>
         </div>
 
         <div class="card">
             <form id="submitForm" action="/submit" method="post" onsubmit="handleSubmit(this)">
                 <div class="field">
-                    <label for="client_name">Client Name</label>
+                    <label for="client_name">Client / Project Name</label>
                     <input
                         type="text"
                         id="client_name"
                         name="client_name"
                         required
-                        placeholder="e.g. Johnson Residence"
+                        placeholder="e.g. Johnson Residence Backyard Reno"
                         autocomplete="off"
                     >
                 </div>
 
                 <div class="field">
-                    <label for="raw_notes">Site-Walk Notes</label>
+                    <label for="raw_notes">Site-Walk Field Notes</label>
                     <textarea
                         id="raw_notes"
                         name="raw_notes"
                         required
-                        placeholder="Paste your raw notes here — messy is fine. The AI handles the cleanup."
+                        placeholder="Paste your raw notes here — shorthand or messy is fine. The AI handles catalog matching."
                     ></textarea>
-                    <p class="field-hint">Write exactly how you'd write them in the field. Don't clean up for the AI — the point is to save you that step.</p>
+                    <p class="field-hint">Speak or write exactly as you do in the field. Save 20+ hours a week in manual pricing spreadsheets.</p>
                 </div>
 
                 <button type="submit" class="btn-primary" id="submitBtn">
                     <span class="spinner" id="spinner"></span>
-                    <span id="btnText">Generate Proposal Draft</span>
+                    <span id="btnText">⚡ Generate Instant Proposal Draft</span>
                 </button>
             </form>
 
-            <div class="example-box">
-                <div class="example-box-label">Example Input</div>
-                <p id="exampleText">johnson family - backyard reno. wants big patio ~400sqft premium pavers. standard fire pit. pergola - they liked the cedar one in our portfolio. 3 irrigation zones for new beds. landscape lighting around patio maybe 8 fixtures. HOA approval req'd - they back onto the street. budget feels like 50s maybe 60k range.</p>
-                <button class="use-example" onclick="fillExample()">Use this example →</button>
+            <div class="preset-section">
+                <div class="preset-title">1-Click Sample Site Notes</div>
+                <div class="preset-chips">
+                    <button type="button" class="preset-btn" onclick="fillPreset(1)">🏡 Backyard Oasis & Pavers</button>
+                    <button type="button" class="preset-btn" onclick="fillPreset(2)">🌱 Sod & Irrigation Install</button>
+                    <button type="button" class="preset-btn" onclick="fillPreset(3)">🔥 Outdoor Kitchen & Pergola</button>
+                </div>
             </div>
         </div>
     </main>
 
-    <footer>Greenscape Pro · Quote Accelerator · All proposals require Marcus's approval before sending</footer>
+    <footer>QuoteFlow Pro · Autonomous AI Proposal Accelerator for High-Ticket Trade Contractors</footer>
 
     <script>
-        function fillExample() {
-            document.getElementById('client_name').value = 'Johnson Residence';
-            document.getElementById('raw_notes').value = document.getElementById('exampleText').textContent;
+        const PRESETS = {
+            1: {
+                client: "Johnson Residence",
+                notes: "johnson family - backyard reno. wants big patio ~400sqft premium pavers. standard fire pit. pergola - liked the cedar one in portfolio. 3 irrigation zones for new beds. landscape lighting around patio maybe 8 fixtures. HOA approval req'd. budget feels like 50s range."
+            },
+            2: {
+                client: "Highland Office Park",
+                notes: "commercial turf reno. tear out existing dead grass 1500 sqft. new sod installation premium tall fescue 1500 sqft. smart irrigation controller install 4 zones. mulch beds around entrance 8 cubic yards. permit required from city."
+            },
+            3: {
+                client: "Miller Residence",
+                notes: "outdoor kitchen & living space. paver patio 600 sqft. built in barbecue grill station with granite top. custom fire pit with seating wall. tree removal 2 small oaks. lighting package 12 fixtures. HOA clearance needed before mobilization."
+            }
+        };
+
+        function fillPreset(id) {
+            if (PRESETS[id]) {
+                document.getElementById('client_name').value = PRESETS[id].client;
+                document.getElementById('raw_notes').value = PRESETS[id].notes;
+            }
         }
 
         function handleSubmit(form) {
@@ -305,7 +322,7 @@
             const btnText = document.getElementById('btnText');
             btn.disabled = true;
             spinner.style.display = 'block';
-            btnText.textContent = 'Generating draft…';
+            btnText.textContent = 'Parsing scope & catalog mapping…';
         }
     </script>
 </body>

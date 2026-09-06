@@ -69,3 +69,18 @@ def update_proposal_status(proposal_id: int, status: str) -> dict:
         raise KeyError(f"Proposal {proposal_id} not found")
     _proposals[proposal_id]["status"] = status
     return _proposals[proposal_id]
+
+
+def update_proposal(proposal_id: int, updates: dict) -> dict:
+    if proposal_id not in _proposals:
+        raise KeyError(f"Proposal {proposal_id} not found")
+    _proposals[proposal_id].update(updates)
+    return _proposals[proposal_id]
+
+
+def delete_proposal(proposal_id: int) -> bool:
+    if proposal_id not in _proposals:
+        return False
+    del _proposals[proposal_id]
+    return True
+

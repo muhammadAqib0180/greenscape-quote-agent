@@ -3,34 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Greenscape Pro — Proposals</title>
+    <title>QuoteFlow Pro — Proposals</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --green-900: #1a3a2a;
-            --green-800: #1e4d35;
-            --green-700: #2d6a4f;
-            --green-600: #40916c;
-            --green-400: #74c69d;
-            --green-100: #d8f3dc;
-            --gray-900: #0f1117;
-            --gray-800: #1c2030;
-            --gray-700: #252a3a;
-            --gray-600: #3a4060;
-            --gray-400: #8892a4;
-            --gray-200: #d1d9e6;
+            --brand-primary: #10b981;
+            --brand-dark: #059669;
+            --brand-accent: #34d399;
+            --bg-dark: #090d16;
+            --bg-card: #131b2e;
+            --bg-card-hover: #1c2742;
+            --gray-700: #263352;
+            --gray-400: #94a3b8;
+            --gray-200: #e2e8f0;
             --white: #ffffff;
-            --warning: #e9c46a;
-            --danger:  #e76f51;
-            --danger-bg: rgba(231,111,81,0.1);
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --danger-bg: rgba(239,68,68,0.12);
         }
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--gray-900);
+            background: var(--bg-dark);
             color: var(--white);
             min-height: 100vh;
             display: flex;
@@ -38,37 +35,39 @@
         }
 
         nav {
-            background: var(--gray-800);
+            background: var(--bg-card);
             border-bottom: 1px solid rgba(255,255,255,0.06);
             padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 60px;
+            height: 64px;
         }
         .nav-brand {
             display: flex; align-items: center; gap: 10px;
-            font-weight: 700; font-size: 1rem;
+            font-weight: 800; font-size: 1.1rem;
             color: var(--white); text-decoration: none;
+            letter-spacing: -0.02em;
         }
         .nav-logo {
-            width: 32px; height: 32px;
-            background: linear-gradient(135deg, var(--green-700), var(--green-400));
-            border-radius: 8px;
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--brand-dark), var(--brand-accent));
+            border-radius: 9px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            box-shadow: 0 0 12px rgba(16,185,129,0.3);
         }
         .nav-link {
             color: var(--gray-400); text-decoration: none;
-            font-size: 0.875rem; font-weight: 500;
-            padding: 6px 14px; border-radius: 8px; transition: all 0.2s;
+            font-size: 0.875rem; font-weight: 600;
+            padding: 8px 16px; border-radius: 8px; transition: all 0.2s;
         }
         .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
-        .nav-link.active { color: var(--green-400); background: rgba(82,183,136,0.1); }
+        .nav-link.active { color: var(--brand-accent); background: rgba(16,185,129,0.12); }
 
         main {
             flex: 1;
-            max-width: 860px; width: 100%;
+            max-width: 900px; width: 100%;
             margin: 0 auto;
             padding: 48px 24px;
         }
@@ -82,24 +81,30 @@
             flex-wrap: wrap;
         }
         .page-header h1 {
-            font-size: 1.75rem; font-weight: 700;
-            color: var(--white); letter-spacing: -0.02em;
+            font-size: 1.85rem; font-weight: 800;
+            color: var(--white); letter-spacing: -0.03em;
         }
         .page-header p { color: var(--gray-400); font-size: 0.875rem; margin-top: 4px; }
 
-        .btn-new {
+        .btn-new, .btn-csv {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 10px 18px;
-            background: linear-gradient(135deg, var(--green-700), var(--green-600));
-            color: var(--white); border: none; border-radius: 10px;
-            font-family: inherit; font-size: 0.875rem; font-weight: 600;
+            border-radius: 10px;
+            font-family: inherit; font-size: 0.875rem; font-weight: 700;
             cursor: pointer; text-decoration: none;
             transition: all 0.2s; white-space: nowrap;
         }
-        .btn-new:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(64,145,108,0.3);
+        .btn-new {
+            background: linear-gradient(135deg, var(--brand-dark), var(--brand-primary));
+            color: var(--white); border: none;
+            box-shadow: 0 4px 16px rgba(16,185,129,0.3);
         }
+        .btn-new:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.45); }
+        .btn-csv {
+            background: rgba(255,255,255,0.06);
+            color: var(--gray-200); border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-csv:hover { background: rgba(255,255,255,0.12); color: var(--white); }
 
         /* Stats row */
         .stats-row {
@@ -109,14 +114,14 @@
             margin-bottom: 32px;
         }
         .stat-card {
-            background: var(--gray-800);
+            background: var(--bg-card);
             border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 16px 18px;
         }
-        .stat-label { font-size: 0.75rem; color: var(--gray-400); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--white); }
-        .stat-value.green { color: var(--green-400); }
+        .stat-label { font-size: 0.75rem; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .stat-value { font-size: 1.5rem; font-weight: 800; color: var(--white); }
+        .stat-value.green { color: var(--brand-accent); }
         .stat-value.warn  { color: var(--warning); }
 
         /* Empty state */
@@ -131,16 +136,16 @@
 
         /* Proposal card */
         .proposal-card {
-            background: var(--gray-800);
+            background: var(--bg-card);
             border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px;
+            border-radius: 16px;
             margin-bottom: 16px;
             overflow: hidden;
             transition: border-color 0.2s;
         }
-        .proposal-card:hover { border-color: rgba(255,255,255,0.12); }
-        .proposal-card.error { border-color: rgba(231,111,81,0.35); }
-        .proposal-card.approved { border-color: rgba(116,198,157,0.3); }
+        .proposal-card:hover { border-color: rgba(255,255,255,0.15); }
+        .proposal-card.error { border-color: rgba(239,68,68,0.4); }
+        .proposal-card.approved { border-color: rgba(16,185,129,0.4); }
         .proposal-card.rejected { opacity: 0.6; }
 
         .card-header {
@@ -151,27 +156,37 @@
             gap: 12px;
             flex-wrap: wrap;
         }
-        .card-title-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .card-title { font-size: 1rem; font-weight: 600; color: var(--white); }
+        .card-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .card-title { font-size: 1.05rem; font-weight: 700; color: var(--white); }
 
         .badge {
             display: inline-flex; align-items: center; gap: 4px;
-            padding: 3px 10px; border-radius: 20px;
-            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
             text-transform: uppercase;
         }
-        .badge-draft    { background: rgba(233,196,106,0.15); color: var(--warning); }
-        .badge-approved { background: rgba(116,198,157,0.15); color: var(--green-400); }
-        .badge-rejected { background: rgba(138,138,138,0.15); color: var(--gray-400); }
+        .badge-draft    { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .badge-approved { background: rgba(16,185,129,0.15); color: var(--brand-accent); }
+        .badge-rejected { background: rgba(148,163,184,0.15); color: var(--gray-400); }
         .badge-error    { background: var(--danger-bg); color: var(--danger); }
-        .badge-render   { background: rgba(231,111,81,0.12); color: var(--danger); }
+        .badge-render   { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+        /* Confidence Badges */
+        .conf-badge {
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 3px 8px; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 700;
+        }
+        .conf-high { background: rgba(16,185,129,0.15); color: var(--brand-accent); }
+        .conf-medium { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .conf-low { background: rgba(239,68,68,0.15); color: var(--danger); }
 
         .card-meta { font-size: 0.78rem; color: var(--gray-400); }
 
         .card-body { padding: 0 22px 20px; }
 
         .summary-text {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: var(--gray-400);
             line-height: 1.6;
             margin-bottom: 16px;
@@ -180,65 +195,66 @@
         .line-items-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             margin-bottom: 16px;
         }
         .line-items-table th {
             text-align: left;
             color: var(--gray-400);
-            font-weight: 500;
-            font-size: 0.72rem;
+            font-weight: 600;
+            font-size: 0.74rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             padding: 0 10px 8px 0;
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
         .line-items-table td {
-            padding: 8px 10px 8px 0;
+            padding: 9px 10px 9px 0;
             border-bottom: 1px solid rgba(255,255,255,0.04);
             color: var(--gray-200);
             vertical-align: middle;
         }
         .line-items-table tr:last-child td { border-bottom: none; }
-        .line-items-table .amount { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+        .line-items-table .amount { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
 
         .subtotal-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 14px;
+            padding: 12px 16px;
             background: rgba(255,255,255,0.03);
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 16px;
         }
-        .subtotal-label { font-size: 0.875rem; font-weight: 600; color: var(--white); }
-        .subtotal-value { font-size: 1.1rem; font-weight: 700; color: var(--green-400); font-variant-numeric: tabular-nums; }
+        .subtotal-label { font-size: 0.9rem; font-weight: 700; color: var(--white); }
+        .subtotal-value { font-size: 1.15rem; font-weight: 800; color: var(--brand-accent); font-variant-numeric: tabular-nums; }
 
         .flags-list {
             display: flex; flex-wrap: wrap; gap: 6px;
             margin-bottom: 16px;
         }
         .flag-chip {
-            padding: 3px 10px; border-radius: 6px;
-            font-size: 0.75rem; font-weight: 500;
-            background: rgba(233,196,106,0.1); color: var(--warning);
-            border: 1px solid rgba(233,196,106,0.2);
+            padding: 4px 10px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600;
+            background: rgba(245,158,11,0.12); color: var(--warning);
+            border: 1px solid rgba(245,158,11,0.2);
         }
 
-        .card-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .card-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
-        .btn-approve, .btn-reject {
-            padding: 9px 18px; border-radius: 8px;
-            font-family: inherit; font-size: 0.85rem; font-weight: 600;
+        .btn-approve, .btn-reject, .btn-edit, .btn-pdf, .btn-delete {
+            padding: 8px 14px; border-radius: 8px;
+            font-family: inherit; font-size: 0.82rem; font-weight: 700;
             cursor: pointer; border: none; transition: all 0.2s;
             display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none;
         }
         .btn-approve {
-            background: linear-gradient(135deg, var(--green-700), var(--green-600));
+            background: linear-gradient(135deg, var(--brand-dark), var(--brand-primary));
             color: var(--white);
         }
         .btn-approve:hover {
-            background: linear-gradient(135deg, var(--green-600), var(--green-400));
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
             transform: translateY(-1px);
         }
         .btn-reject {
@@ -247,29 +263,80 @@
         }
         .btn-reject:hover { background: rgba(255,255,255,0.1); color: var(--white); }
 
+        .btn-edit {
+            background: rgba(16,185,129,0.12);
+            color: var(--brand-accent);
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+        .btn-edit:hover { background: rgba(16,185,129,0.25); }
+
+        .btn-pdf {
+            background: rgba(255,255,255,0.07);
+            color: var(--gray-200);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-pdf:hover { background: rgba(255,255,255,0.14); color: var(--white); }
+
+        .btn-delete {
+            background: rgba(239,68,68,0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+        .btn-delete:hover { background: rgba(239,68,68,0.2); }
+
         .error-block {
             background: var(--danger-bg);
-            border: 1px solid rgba(231,111,81,0.2);
+            border: 1px solid rgba(239,68,68,0.2);
             border-radius: 10px;
             padding: 14px 16px;
             margin-bottom: 14px;
         }
         .error-block .error-title {
-            font-size: 0.8rem; font-weight: 600; color: var(--danger);
+            font-size: 0.8rem; font-weight: 700; color: var(--danger);
             margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
         }
         .error-block .error-msg { font-size: 0.8rem; color: var(--gray-400); line-height: 1.5; }
-        .error-block .raw-notes {
-            margin-top: 10px;
-            font-size: 0.78rem; color: var(--gray-400);
-            font-style: italic; line-height: 1.6;
-        }
 
         .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 0 22px; }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 1000; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            max-width: 680px; width: 100%;
+            max-height: 90vh; overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 12px;
+        }
+        .modal-header h2 { font-size: 1.2rem; font-weight: 800; color: var(--white); }
+        .close-modal { background: none; border: none; color: var(--gray-400); font-size: 1.5rem; cursor: pointer; }
+        .close-modal:hover { color: var(--white); }
+
+        .edit-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.85rem; }
+        .edit-table th { text-align: left; color: var(--gray-400); padding: 8px 6px; font-size: 0.75rem; }
+        .edit-table td { padding: 6px; }
+        .edit-table input {
+            width: 100%; padding: 6px 10px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;
+            color: var(--white); font-size: 0.85rem;
+        }
+
         footer {
-            text-align: center; padding: 20px;
-            font-size: 0.78rem; color: var(--gray-600);
+            text-align: center; padding: 24px;
+            font-size: 0.8rem; color: var(--gray-400);
             border-top: 1px solid rgba(255,255,255,0.04);
         }
     </style>
@@ -277,22 +344,27 @@
 <body>
     <nav>
         <a href="/" class="nav-brand">
-            <div class="nav-logo">🌿</div>
-            Greenscape Pro
+            <div class="nav-logo">⚡</div>
+            QuoteFlow Pro
         </a>
         <div style="display:flex;gap:4px;">
             <a href="/" class="nav-link">New Quote</a>
             <a href="/proposals" class="nav-link active">Proposals</a>
+            <a href="/catalog" class="nav-link">Catalog</a>
+            <a href="/analytics" class="nav-link">Analytics</a>
         </div>
     </nav>
 
     <main>
         <div class="page-header">
             <div>
-                <h1>Proposals</h1>
-                <p>Review AI-generated drafts. Nothing sends without your approval.</p>
+                <h1>Proposal Drafts</h1>
+                <p>Review AI-generated drafts. Edit quantities, spot-check AI confidence ratings, and generate PDFs.</p>
             </div>
-            <a href="/" class="btn-new">＋ New Submission</a>
+            <div style="display:flex; gap:8px;">
+                <a href="/api/v1/proposals/export/csv" class="btn-csv" download>📥 Export CSV</a>
+                <a href="/" class="btn-new">＋ New Submission</a>
+            </div>
         </div>
 
         <!-- Stats -->
@@ -350,7 +422,7 @@
                         <div class="error-block">
                             <div class="error-title">⚠ AI parsing failed — manual review required</div>
                             <div class="error-msg">{{ p.parse_error }}</div>
-                            <div class="raw-notes">Raw notes: {{ p.raw_notes }}</div>
+                            <div style="margin-top:8px; font-size:0.8rem; color:var(--gray-400); font-style:italic;">Raw notes: {{ p.raw_notes }}</div>
                         </div>
                     {% else %}
                         <p class="summary-text">{{ p.extracted_items.notes_summary }}</p>
@@ -360,6 +432,7 @@
                             <thead>
                                 <tr>
                                     <th>Item</th>
+                                    <th>Confidence</th>
                                     <th>Qty</th>
                                     <th>Unit Price</th>
                                     <th style="text-align:right;">Total</th>
@@ -369,6 +442,14 @@
                                 {% for item in p.extracted_items.line_items %}
                                 <tr>
                                     <td>{{ item.name }}</td>
+                                    <td>
+                                        {% set conf = item.get('confidence', 'high') %}
+                                        <span class="conf-badge conf-{{ conf }}">
+                                            {% if conf == 'high' %}✓ High
+                                            {% elif conf == 'medium' %}⚡ Med
+                                            {% else %}⚠ Spot Check{% endif %}
+                                        </span>
+                                    </td>
                                     <td>{{ item.quantity }}</td>
                                     <td>${{ "{:,.2f}".format(item.unit_price) }}</td>
                                     <td class="amount">${{ "{:,.2f}".format(item.line_total) }}</td>
@@ -391,16 +472,23 @@
                         </div>
                         {% endif %}
 
-                        {% if p.status == 'draft' %}
                         <div class="card-actions">
+                            {% if p.status == 'draft' %}
                             <form action="/proposals/{{ p.id }}/approve" method="post" style="display:inline">
                                 <button type="submit" class="btn-approve">✓ Approve & Notify Team</button>
                             </form>
+                            <button type="button" class="btn-edit" onclick="openEditModal({{ p.id }}, '{{ p.client_name|escape }}', '{{ p.extracted_items.notes_summary|escape }}', {{ p.extracted_items.line_items|tojson|safe }})">✏ Edit Proposal</button>
                             <form action="/proposals/{{ p.id }}/reject" method="post" style="display:inline">
                                 <button type="submit" class="btn-reject">✕ Reject</button>
                             </form>
+                            {% endif %}
+
+                            <a href="/proposals/{{ p.id }}/download-pdf" class="btn-pdf" target="_blank">📄 PDF Quote</a>
+
+                            <form action="/proposals/{{ p.id }}/delete" method="post" style="display:inline" onsubmit="return confirm('Delete proposal?')">
+                                <button type="submit" class="btn-delete">🗑 Delete</button>
+                            </form>
                         </div>
-                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -415,6 +503,115 @@
         {% endif %}
     </main>
 
-    <footer>Greenscape Pro · Quote Accelerator · All proposals require Marcus's approval before sending</footer>
+    <!-- Modal for Proposal Editing -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏ Edit Proposal Line Items</h2>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm" method="post">
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:0.78rem; font-weight:700; color:var(--gray-400); text-transform:uppercase;">Client Name</label>
+                    <input type="text" id="edit_client_name" name="client_name" required style="width:100%; padding:10px 14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:white; margin-top:4px;">
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:0.78rem; font-weight:700; color:var(--gray-400); text-transform:uppercase;">Notes Summary</label>
+                    <input type="text" id="edit_notes_summary" name="notes_summary" required style="width:100%; padding:10px 14px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:white; margin-top:4px;">
+                </div>
+
+                <label style="font-size:0.78rem; font-weight:700; color:var(--gray-400); text-transform:uppercase; margin-bottom:6px; display:block;">Line Items</label>
+                <table class="edit-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th style="width:80px;">Qty</th>
+                            <th style="width:100px;">Unit Price ($)</th>
+                            <th style="width:40px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="editItemsTableBody"></tbody>
+                </table>
+
+                <input type="hidden" name="items_json" id="items_json_input">
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px;">
+                    <button type="button" class="btn-new" style="font-size:0.8rem; padding:8px 14px;" onclick="addEditRow()">＋ Add Line Item</button>
+                    <div>
+                        <button type="button" class="btn-reject" onclick="closeEditModal()">Cancel</button>
+                        <button type="button" class="btn-approve" onclick="saveEditModal()">Save & Recalculate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>QuoteFlow Pro · Autonomous AI Proposal Accelerator for High-Ticket Trade Contractors</footer>
+
+    <script>
+        let currentEditId = null;
+
+        function openEditModal(id, clientName, summary, lineItems) {
+            currentEditId = id;
+            document.getElementById('editForm').action = '/proposals/' + id + '/edit';
+            document.getElementById('edit_client_name').value = clientName;
+            document.getElementById('edit_notes_summary').value = summary;
+
+            const tbody = document.getElementById('editItemsTableBody');
+            tbody.innerHTML = '';
+
+            lineItems.forEach((item, idx) => {
+                addEditRow(item.pricing_item_id || idx + 1, item.name, item.quantity, item.unit_price, item.confidence || 'high');
+            });
+
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        function addEditRow(id = 1, name = '', qty = 1, price = 0, conf = 'high') {
+            const tbody = document.getElementById('editItemsTableBody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <input type="hidden" class="row-id" value="${id}">
+                    <input type="hidden" class="row-conf" value="${conf}">
+                    <input type="text" class="row-name" value="${name.replace(/"/g, '&quot;')}" placeholder="Item description" required>
+                </td>
+                <td><input type="number" step="0.1" class="row-qty" value="${qty}" required style="text-align:center;"></td>
+                <td><input type="number" step="0.01" class="row-price" value="${price}" required style="text-align:right;"></td>
+                <td><button type="button" onclick="this.closest('tr').remove()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.1rem;">&times;</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function saveEditModal() {
+            const rows = document.querySelectorAll('#editItemsTableBody tr');
+            const items = [];
+            rows.forEach(tr => {
+                const name = tr.querySelector('.row-name').value;
+                const qty = parseFloat(tr.querySelector('.row-qty').value) || 1;
+                const price = parseFloat(tr.querySelector('.row-price').value) || 0;
+                const id = parseInt(tr.querySelector('.row-id').value) || 1;
+                const conf = tr.querySelector('.row-conf').value || 'high';
+                if (name.trim()) {
+                    items.push({
+                        pricing_item_id: id,
+                        name: name.trim(),
+                        quantity: qty,
+                        unit_price: price,
+                        line_total: Math.round(qty * price * 100) / 100,
+                        confidence: conf,
+                        confidence_reason: 'Manually edited by estimator'
+                    });
+                }
+            });
+
+            document.getElementById('items_json_input').value = JSON.stringify(items);
+            document.getElementById('editForm').submit();
+        }
+    </script>
 </body>
 </html>

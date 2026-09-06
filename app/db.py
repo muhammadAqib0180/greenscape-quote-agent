@@ -13,6 +13,8 @@ if os.environ.get("APP_ENV") == "test":
         list_proposals,
         get_proposal,
         update_proposal_status,
+        update_proposal,
+        delete_proposal,
     )
 else:
     _client: Client | None = None
@@ -58,3 +60,18 @@ else:
             .execute()
         )
         return res.data[0]
+
+    def update_proposal(proposal_id: int, updates: dict) -> dict:  # type: ignore[misc]
+        res = (
+            get_client()
+            .table("proposals")
+            .update(updates)
+            .eq("id", proposal_id)
+            .execute()
+        )
+        return res.data[0]
+
+    def delete_proposal(proposal_id: int) -> bool:  # type: ignore[misc]
+        res = get_client().table("proposals").delete().eq("id", proposal_id).execute()
+        return len(res.data) > 0
+

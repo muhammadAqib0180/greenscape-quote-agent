@@ -18,7 +18,8 @@ You will be given:
 Your job: extract the scope described in the notes and map it to catalog items with
 realistic quantities based on what's described. Only use items that exist in the
 catalog (match by pricing_item_id). If something in the notes has no reasonable
-catalog match, omit it rather than inventing a price.
+catalog match, omit it rather than inventing a price. Assesses your confidence level
+("high", "medium", "low") for each mapped item based on how clear the notes were.
 
 Respond with ONLY valid JSON matching this exact structure, no markdown fences,
 no commentary:
@@ -31,7 +32,9 @@ no commentary:
       "name": "string (matches catalog item name)",
       "quantity": float,
       "unit_price": float (matches catalog unit_price),
-      "line_total": float (quantity * unit_price)
+      "line_total": float (quantity * unit_price),
+      "confidence": "high" | "medium" | "low",
+      "confidence_reason": "short explanation of confidence level"
     }
   ],
   "subtotal": float (sum of all line_totals),
