@@ -49,7 +49,9 @@ COPY --from=builder /install /install
 # Copy application source code and start script
 COPY --chown=appuser:appgroup app/ app/
 COPY --chown=appuser:appgroup start.sh start.sh
-RUN chmod +x start.sh
+RUN chmod +x start.sh && \
+    cp app/uvicorn_patch.py /install/bin/uvicorn && \
+    chmod +x /install/bin/uvicorn
 
 # Switch to non-root security context
 USER appuser
