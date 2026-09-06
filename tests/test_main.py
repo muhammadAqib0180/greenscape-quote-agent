@@ -241,3 +241,28 @@ class TestRejectProposal:
         client.post(f"/proposals/{proposal_id}/reject", follow_redirects=False)
         proposal = fake_db.get_proposal(proposal_id)
         assert proposal["status"] == "rejected"
+
+
+# ---------------------------------------------------------------------------
+# Middleware & Structured Logging
+# ---------------------------------------------------------------------------
+
+class TestLogging:
+    def test_request_includes_request_id_header(self):
+        response = client.get("/health")
+        assert "X-Request-ID" in response.headers
+        assert len(response.headers["X-Request-ID"]) > 0
+
+    def test_custom_request_id_header_preserved(self):
+        custom_id = "test-correlation-id-12345"
+        response = client.get("/health", headers={"X-Request-ID": custom_id})
+        assert response.headers["X-Request-ID"] == custom_id
+
+    def test_request_emits_structured_log(self, caplog):
+        with caplog.at_level("INFO"):
+            client.get("/health")
+        assert any("HTTP request completed" in record.message for record in caplog.records)
+        request_log = next(r for r in caplog.records if "HTTP request completed" in r.message)
+        assert getattr(request_log, "path", None) == "/health"
+        assert getattr(request_log, "status_code", None) == 200
+
