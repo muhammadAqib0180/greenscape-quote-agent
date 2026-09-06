@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=test
+      - GEMINI_API_KEY=fake-key-for-ci
+      - RENDER_THRESHOLD=30000
+    restart: unless-stopped

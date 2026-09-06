@@ -27,6 +27,14 @@ fields, item IDs that don't exist in the catalog), the proposal is stored with a
 
 ## Setup
 
+### Option A: Quickstart with Docker (No credentials required)
+Boot the application immediately in offline test mode using Docker Compose:
+```bash
+docker compose up
+```
+Visit `http://localhost:8000` to submit notes, and `http://localhost:8000/proposals` to review.
+
+### Option B: Local Python Environment
 1. **Supabase**: create a project at supabase.com, then run `supabase_schema.sql`
    in the SQL Editor to create tables and seed the pricing catalog.
 2. **Gemini key**: get one at aistudio.google.com/apikey
@@ -34,11 +42,12 @@ fields, item IDs that don't exist in the catalog), the proposal is stored with a
    Add to Slack (any workspace/channel works for testing)
 4. Copy `.env.example` to `.env` and fill in the three values above.
 5. Install and run locally:
-   ```
-   pip install -r requirements.txt
+   ```bash
+   pip install -r requirements-lock.txt
    uvicorn app.main:app --reload
    ```
 6. Visit `http://localhost:8000` to submit notes, `/proposals` to review/approve.
+
 
 ## Deploy
 Push to GitHub, connect the repo on Railway or Render, add the same env vars in
