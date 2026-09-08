@@ -1,3 +1,8 @@
+import os
+os.environ["APP_ENV"] = "test"
+os.environ.setdefault("GEMINI_API_KEY", "fake-test-key")
+os.environ.setdefault("RENDER_THRESHOLD", "30000")
+
 import pytest
 from unittest.mock import patch
 from fastapi.testclient import TestClient

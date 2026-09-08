@@ -477,7 +477,15 @@
                             <form action="/proposals/{{ p.id }}/approve" method="post" style="display:inline">
                                 <button type="submit" class="btn-approve">✓ Approve & Notify Team</button>
                             </form>
-                            <button type="button" class="btn-edit" onclick="openEditModal({{ p.id }}, '{{ p.client_name|escape }}', '{{ p.extracted_items.notes_summary|escape }}', {{ p.extracted_items.line_items|tojson|safe }})">✏ Edit Proposal</button>
+                            <script type="application/json" id="proposal-edit-data-{{ p.id }}">
+                            {
+                                "id": {{ p.id }},
+                                "client_name": {{ (p.client_name or '')|tojson }},
+                                "notes_summary": {{ ((p.extracted_items.notes_summary if p.extracted_items else '') or '')|tojson }},
+                                "line_items": {{ ((p.extracted_items.line_items if p.extracted_items and p.extracted_items.line_items else []) or [])|tojson }}
+                            }
+                            </script>
+                            <button type="button" class="btn-edit" onclick="openProposalEditModal({{ p.id }})">✏ Edit Proposal</button>
                             <form action="/proposals/{{ p.id }}/reject" method="post" style="display:inline">
                                 <button type="submit" class="btn-reject">✕ Reject</button>
                             </form>
@@ -550,6 +558,17 @@
 
     <script>
         let currentEditId = null;
+
+        function openProposalEditModal(id) {
+            const el = document.getElementById('proposal-edit-data-' + id);
+            if (!el) return;
+            try {
+                const data = JSON.parse(el.textContent);
+                openEditModal(data.id, data.client_name, data.notes_summary, data.line_items || []);
+            } catch (err) {
+                console.error("Error parsing proposal edit data:", err);
+            }
+        }
 
         function openEditModal(id, clientName, summary, lineItems) {
             currentEditId = id;

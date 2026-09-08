@@ -140,7 +140,7 @@ def edit_proposal_items(
     proposal_id: int,
     request: Request,
     client_name: str = Form(...),
-    notes_summary: str = Form(...),
+    notes_summary: str = Form(""),
     items_json: str = Form(...),
 ):
     """Processes edited line items submitted from the proposals dashboard UI."""
