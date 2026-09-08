@@ -73,7 +73,10 @@ class CorrelationIdMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(CorrelationIdMiddleware)
 
-templates = Jinja2Templates(directory="app/templates")
+import pathlib
+
+TEMPLATES_DIR = pathlib.Path(__file__).resolve().parent / "templates"
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 RENDER_THRESHOLD = float(os.environ.get("RENDER_THRESHOLD", 30000))
 
