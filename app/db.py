@@ -105,11 +105,7 @@ else:
         if _client is None:
             url = os.environ["SUPABASE_URL"]
             key = os.environ["SUPABASE_KEY"]
-            if ClientOptions is not None:
-                options = ClientOptions(postgrest_client_timeout=30)
-                _client = create_client(url, key, options=options)
-            else:
-                _client = create_client(url, key)
+            _client = create_client(url, key)
         return _client
 
     @retry_db_call()
