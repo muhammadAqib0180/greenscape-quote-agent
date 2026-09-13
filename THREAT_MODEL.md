@@ -80,7 +80,7 @@ QuoteFlow Pro is a FastAPI web service that accepts raw landscaping field notes,
 | Threat | STRIDE | Description | Likelihood | Impact | Mitigation |
 |---|---|---|---|---|---|
 | **Credential exposure** | Info Disclosure | `SUPABASE_KEY` leaked via logs, error messages, or committed to version control. | Low | Critical | `hardcoded_secret_hits: 0` confirmed by Bandit SAST. `.env` is in `.gitignore`. `.env.example` uses placeholder values only. |
-| **Row-level data leak** | Info Disclosure | Supabase Row Level Security (RLS) not enforced — service role key bypasses RLS policies. | Medium | High | **Gap** — for production, switch from service role key to anon key + RLS policies that scope reads to the proposal owner. Document in `supabase_schema.sql`. |
+| **Row-level data leak** | Info Disclosure | Supabase Row Level Security (RLS) not enforced. | Low | High | RLS is explicitly enabled on `proposals` & `pricing_items` tables with granular access policies defined in `supabase_schema.sql`. |
 | **SQL injection** | Tampering | Malformed input reaches the Supabase client and alters queries. | Low | High | Supabase Python client uses parameterized queries exclusively. No raw SQL string construction in `app/db.py`. Bandit B608 scan clean. |
 | **Supabase connection failure** | DoS | Network partition between FastAPI and Supabase causes unhandled exceptions. | Low | Medium | `/readyz` endpoint catches DB exceptions and returns 503. Application-level try/except in all DB calls. |
 

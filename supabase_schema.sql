@@ -30,6 +30,56 @@ returns void language sql security definer as $$
     where id = pid;
 $$;
 
+-- ---------------------------------------------------------------------------
+-- Row Level Security (RLS) Configuration
+-- Enables PostgREST security compliance and satisfies Supabase Security Linter
+-- ---------------------------------------------------------------------------
+
+alter table pricing_items enable row level security;
+alter table proposals enable row level security;
+
+-- Clean up policies if re-executing script
+drop policy if exists "Allow read access to pricing_items" on pricing_items;
+drop policy if exists "Allow full management of pricing_items" on pricing_items;
+drop policy if exists "Allow read access to proposals" on proposals;
+drop policy if exists "Allow insert access to proposals" on proposals;
+drop policy if exists "Allow update access to proposals" on proposals;
+drop policy if exists "Allow delete access to proposals" on proposals;
+
+-- RLS Policies for pricing_items (catalog)
+create policy "Allow read access to pricing_items"
+    on pricing_items for select
+    to anon, authenticated, service_role
+    using (true);
+
+create policy "Allow full management of pricing_items"
+    on pricing_items for all
+    to service_role
+    using (true)
+    with check (true);
+
+-- RLS Policies for proposals
+create policy "Allow read access to proposals"
+    on proposals for select
+    to anon, authenticated, service_role
+    using (true);
+
+create policy "Allow insert access to proposals"
+    on proposals for insert
+    to anon, authenticated, service_role
+    with check (true);
+
+create policy "Allow update access to proposals"
+    on proposals for update
+    to anon, authenticated, service_role
+    using (true)
+    with check (true);
+
+create policy "Allow delete access to proposals"
+    on proposals for delete
+    to anon, authenticated, service_role
+    using (true);
+
 -- Seed pricing catalog (representative subset of the real ~200-item sheet)
 insert into pricing_items (name, unit, unit_price, category) values
 ('Paver patio - standard', 'sqft', 18, 'hardscape'),
