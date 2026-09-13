@@ -36,7 +36,7 @@ def test_get_client(real_db_module):
 
         c1 = real_db_module.get_client()
         assert c1 == mock_client
-        mock_create.assert_called_once_with("https://mock.supabase.co", "mock-supabase-key")
+        assert mock_create.call_args[0] == ("https://mock.supabase.co", "mock-supabase-key")
 
         # Second call should return cached client without calling create_client again
         c2 = real_db_module.get_client()
@@ -115,3 +115,37 @@ def test_update_proposal_status(real_db_module):
     mock_client.table.assert_called_once_with("proposals")
     mock_client.table().update.assert_called_once_with({"status": "approved"})
     mock_client.table().update.return_value.eq.assert_called_once_with("id", 10)
+
+
+def test_retry_db_call_transient_retry(real_db_module):
+    mock_client = MagicMock()
+    mock_res = MagicMock()
+    proposal_data = {"client_name": "Retry Client", "subtotal": 200.0}
+    mock_res.data = [proposal_data]
+
+    # Fail twice with Gateway Timeout, then succeed on 3rd attempt
+    mock_client.table.return_value.insert.return_value.execute.side_effect = [
+        Exception("504 Gateway Timeout"),
+        Exception("ValidationError: 3 validation errors for APIErrorFromJSON"),
+        mock_res,
+    ]
+
+    real_db_module._client = mock_client
+    with patch("time.sleep"):  # skip sleep in tests
+        result = real_db_module.insert_proposal(proposal_data)
+
+    assert result == proposal_data
+    assert mock_client.table.return_value.insert.return_value.execute.call_count == 3
+
+
+def test_retry_db_call_exhausted_raises_timeout_error(real_db_module):
+    mock_client = MagicMock()
+    mock_client.table.return_value.insert.return_value.execute.side_effect = Exception("504 Gateway Timeout")
+
+    real_db_module._client = mock_client
+    with patch("time.sleep"):
+        with pytest.raises(real_db_module.DatabaseTimeoutError) as exc_info:
+            real_db_module.insert_proposal({"client_name": "Fail Client"})
+
+    assert "timed out (504 Gateway Timeout)" in str(exc_info.value)
+

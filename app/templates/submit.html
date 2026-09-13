@@ -250,6 +250,12 @@
         </div>
 
         <div class="card">
+            {% if error %}
+            <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 14px 18px; border-radius: 12px; margin-bottom: 24px; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+                <span>⚠️</span>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
             <form id="submitForm" action="/submit" method="post" onsubmit="handleSubmit(this)">
                 <div class="field">
                     <label for="client_name">Client / Project Name</label>
@@ -260,6 +266,7 @@
                         required
                         placeholder="e.g. Johnson Residence Backyard Reno"
                         autocomplete="off"
+                        value="{{ client_name if client_name else '' }}"
                     >
                 </div>
 
@@ -270,7 +277,7 @@
                         name="raw_notes"
                         required
                         placeholder="Paste your raw notes here — shorthand or messy is fine. The AI handles catalog matching."
-                    ></textarea>
+                    >{{ raw_notes if raw_notes else '' }}</textarea>
                     <p class="field-hint">Speak or write exactly as you do in the field. Save 20+ hours a week in manual pricing spreadsheets.</p>
                 </div>
 

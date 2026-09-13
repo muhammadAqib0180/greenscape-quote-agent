@@ -51,6 +51,34 @@ app.include_router(api_router)
 app.include_router(web_router)
 
 
+@app.exception_handler(db.DatabaseTimeoutError)
+def database_timeout_exception_handler(request, exc: db.DatabaseTimeoutError):
+    logger.error("Database timeout on %s: %s", request.url.path, exc)
+    if request.url.path.startswith("/api/"):
+        return JSONResponse(
+            status_code=503,
+            content={"detail": "Database service timed out (504 Gateway Timeout). Please try again."},
+        )
+    return JSONResponse(
+        status_code=503,
+        content={"detail": "Database service is temporarily unavailable due to timeout. Please try again."},
+    )
+
+
+@app.exception_handler(db.DatabaseError)
+def database_exception_handler(request, exc: db.DatabaseError):
+    logger.error("Database error on %s: %s", request.url.path, exc)
+    if request.url.path.startswith("/api/"):
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Database error occurred. Please try again."},
+        )
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "A database error occurred while processing your request."},
+    )
+
+
 # ---------------------------------------------------------------------------
 # Liveness probe — no external dependencies
 # ---------------------------------------------------------------------------
