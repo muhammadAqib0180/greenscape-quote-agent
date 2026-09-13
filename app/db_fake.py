@@ -38,6 +38,7 @@ def reset() -> None:
 # Public API — mirrors app/db.py exactly
 # ---------------------------------------------------------------------------
 
+
 def get_client():  # type: ignore[return]
     """Fake client — returns None; tests should not call this directly."""
     return None
@@ -49,7 +50,12 @@ def get_pricing_catalog() -> list[dict]:
 
 def insert_proposal(row: dict) -> dict:
     proposal_id = next(_id_counter)
-    record = {"id": proposal_id, "created_at": "2026-09-01T00:00:00Z", **row}
+    record: dict[str, Any] = {
+        "id": proposal_id,
+        "created_at": "2026-09-01T00:00:00Z",
+        "revision_history": [],
+        **row,
+    }
     _proposals[proposal_id] = record
     return record
 
@@ -84,3 +90,30 @@ def delete_proposal(proposal_id: int) -> bool:
     del _proposals[proposal_id]
     return True
 
+
+# ---------------------------------------------------------------------------
+# Revision history API (AI Rewrite Engine)
+# ---------------------------------------------------------------------------
+
+
+def get_revision_history(proposal_id: int) -> list[dict]:
+    """Return the full revision history list for a proposal.
+
+    Returns an empty list if the proposal has no revisions yet.
+    Raises KeyError if the proposal does not exist.
+    """
+    proposal = get_proposal(proposal_id)
+    return list(proposal.get("revision_history") or [])
+
+
+def add_revision_history(proposal_id: int, revision_entry: dict) -> dict:
+    """Append a revision entry to a proposal's history and return the proposal.
+
+    The revision_entry dict should match the RevisionEntry schema.
+    Raises KeyError if the proposal does not exist.
+    """
+    proposal = get_proposal(proposal_id)
+    history: list[dict] = list(proposal.get("revision_history") or [])
+    history.append(revision_entry)
+    _proposals[proposal_id]["revision_history"] = history
+    return _proposals[proposal_id]

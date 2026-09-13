@@ -12,13 +12,23 @@ create table if not exists proposals (
     id serial primary key,
     client_name text not null,
     raw_notes text not null,
-    extracted_items jsonb,       -- structured line items from the LLM
+    extracted_items jsonb,          -- structured line items from the LLM
     subtotal numeric,
     needs_render boolean default false,
-    status text default 'draft', -- draft | approved | rejected
-    parse_error text,            -- populated if LLM output failed validation
+    status text default 'draft',    -- draft | approved | rejected
+    parse_error text,               -- populated if LLM output failed validation
+    revision_history jsonb default '[]'::jsonb,  -- AI Rewrite Engine audit trail
     created_at timestamptz default now()
 );
+
+-- Atomic append helper for the AI Rewrite Engine.
+-- Called by app/db.py:add_revision_history() to avoid read-modify-write races.
+create or replace function append_revision(pid int, entry jsonb)
+returns void language sql security definer as $$
+    update proposals
+    set revision_history = revision_history || jsonb_build_array(entry)
+    where id = pid;
+$$;
 
 -- Seed pricing catalog (representative subset of the real ~200-item sheet)
 insert into pricing_items (name, unit, unit_price, category) values

@@ -95,13 +95,13 @@ class TestSubmit:
         return (None, "LLM call failed: timeout")
 
     def test_submit_valid_notes_redirects_to_proposals(self):
-        with patch("app.main.llm.parse_notes_to_proposal", return_value=self._mock_llm_success()):
+        with patch("app.routes.web.llm.parse_notes_to_proposal", return_value=self._mock_llm_success()):
             response = client.post("/submit", data=FORM_DATA, follow_redirects=False)
         assert response.status_code == 303
         assert response.headers["location"] == "/proposals"
 
     def test_submit_valid_notes_stores_proposal(self):
-        with patch("app.main.llm.parse_notes_to_proposal", return_value=self._mock_llm_success()):
+        with patch("app.routes.web.llm.parse_notes_to_proposal", return_value=self._mock_llm_success()):
             client.post("/submit", data=FORM_DATA, follow_redirects=False)
         proposals = fake_db.list_proposals()
         assert len(proposals) == 1
@@ -110,7 +110,7 @@ class TestSubmit:
         assert proposals[0]["subtotal"] == 25.0
 
     def test_submit_llm_error_stores_draft_with_error(self):
-        with patch("app.main.llm.parse_notes_to_proposal", return_value=self._mock_llm_error()):
+        with patch("app.routes.web.llm.parse_notes_to_proposal", return_value=self._mock_llm_error()):
             response = client.post("/submit", data=FORM_DATA, follow_redirects=False)
         assert response.status_code == 303
         proposals = fake_db.list_proposals()
@@ -130,14 +130,14 @@ class TestSubmit:
         from app.models import ParsedProposal
         parsed = ParsedProposal(**big_proposal)
 
-        with patch("app.main.llm.parse_notes_to_proposal", return_value=(parsed, None)):
+        with patch("app.routes.web.llm.parse_notes_to_proposal", return_value=(parsed, None)):
             client.post("/submit", data=FORM_DATA, follow_redirects=False)
 
         proposals = fake_db.list_proposals()
         assert proposals[0]["needs_render"] is True
 
     def test_submit_low_value_does_not_set_needs_render(self):
-        with patch("app.main.llm.parse_notes_to_proposal", return_value=self._mock_llm_success()):
+        with patch("app.routes.web.llm.parse_notes_to_proposal", return_value=self._mock_llm_success()):
             client.post("/submit", data=FORM_DATA, follow_redirects=False)
 
         proposals = fake_db.list_proposals()
@@ -192,21 +192,21 @@ class TestApproveProposal:
 
     def test_approve_redirects_to_proposals(self):
         proposal_id = self._seed_proposal()
-        with patch("app.main.slack.notify_proposal_approved") as mock_slack:
+        with patch("app.routes.web.slack.notify_proposal_approved") as mock_slack:
             response = client.post(f"/proposals/{proposal_id}/approve", follow_redirects=False)
         assert response.status_code == 303
         assert response.headers["location"] == "/proposals"
 
     def test_approve_updates_status(self):
         proposal_id = self._seed_proposal()
-        with patch("app.main.slack.notify_proposal_approved"):
+        with patch("app.routes.web.slack.notify_proposal_approved"):
             client.post(f"/proposals/{proposal_id}/approve", follow_redirects=False)
         proposal = fake_db.get_proposal(proposal_id)
         assert proposal["status"] == "approved"
 
     def test_approve_calls_slack_notify(self):
         proposal_id = self._seed_proposal()
-        with patch("app.main.slack.notify_proposal_approved") as mock_slack:
+        with patch("app.routes.web.slack.notify_proposal_approved") as mock_slack:
             client.post(f"/proposals/{proposal_id}/approve", follow_redirects=False)
         mock_slack.assert_called_once()
         called_proposal = mock_slack.call_args[0][0]

@@ -43,6 +43,42 @@ no commentary:
 }
 """
 
+REWRITE_SYSTEM_PROMPT = """You are a landscaping estimator assistant for Greenscape Pro.
+
+You are given an EXISTING approved proposal (as JSON) and REVISION INSTRUCTIONS
+from the estimator describing what needs to change.
+
+Your job:
+1. Apply the revision instructions to the existing proposal scope.
+2. Add, remove, or adjust line items according to the instructions.
+3. Only use items that exist in the provided pricing catalog.
+4. Recalculate quantities and subtotals accurately.
+5. Update notes_summary to reflect the revised scope.
+6. Update special_conditions if the instructions mention any (permits, HOA, etc).
+
+Respond with ONLY valid JSON matching this exact structure, no markdown fences,
+no commentary. The client_name must remain unchanged unless explicitly instructed
+to change it:
+
+{
+  "client_name": "string",
+  "line_items": [
+    {
+      "pricing_item_id": int,
+      "name": "string (matches catalog item name)",
+      "quantity": float,
+      "unit_price": float (matches catalog unit_price),
+      "line_total": float (quantity * unit_price),
+      "confidence": "high" | "medium" | "low",
+      "confidence_reason": "short explanation of confidence level"
+    }
+  ],
+  "subtotal": float (sum of all line_totals),
+  "notes_summary": "1-2 sentence plain summary of the REVISED request",
+  "special_conditions": ["updated list of any special conditions or flags"]
+}
+"""
+
 
 def parse_notes_to_proposal(
     client_name: str, raw_notes: str, pricing_catalog: list[dict]
@@ -79,4 +115,68 @@ def parse_notes_to_proposal(
         # Guardrail: malformed or off-schema output never gets auto-processed.
         # It's stored with the error so a human can review and re-run.
         logger.warning("LLM output validation failed for client=%s: %s", client_name, e)
+        return None, f"Validation failed: {e}"
+
+
+def rewrite_proposal(
+    existing_proposal: dict,
+    revision_instructions: str,
+    pricing_catalog: list[dict],
+) -> tuple[ParsedProposal | None, str | None]:
+    """Apply AI-driven revision instructions to an existing proposal.
+
+    Sends the current proposal scope (extracted_items) plus the estimator's
+    free-text revision instructions through Gemini. Returns a fresh
+    ParsedProposal reflecting the changes, or an error string on failure.
+
+    Args:
+        existing_proposal: The full proposal dict from the database.
+        revision_instructions: Free-text description of what to change.
+        pricing_catalog: The current pricing catalog for item lookups.
+
+    Returns:
+        (ParsedProposal, None) on success.
+        (None, error_message) on LLM failure or schema validation error.
+    """
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+    existing_scope = json.dumps(
+        existing_proposal.get("extracted_items") or {}, indent=2
+    )
+    catalog_str = json.dumps(pricing_catalog, indent=2)
+
+    full_prompt = (
+        f"{REWRITE_SYSTEM_PROMPT}\n\n"
+        f"=== EXISTING PROPOSAL ===\n{existing_scope}\n\n"
+        f"=== REVISION INSTRUCTIONS ===\n{revision_instructions}\n\n"
+        f"=== PRICING CATALOG ===\n{catalog_str}"
+    )
+
+    try:
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=full_prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+            ),
+        )
+        raw_json = response.text
+    except Exception as e:
+        logger.error(
+            "Rewrite LLM call failed for proposal_id=%s: %s",
+            existing_proposal.get("id"),
+            e,
+        )
+        return None, f"LLM call failed: {e}"
+
+    try:
+        data = json.loads(raw_json)
+        parsed = ParsedProposal(**data)
+        return parsed, None
+    except (json.JSONDecodeError, ValidationError) as e:
+        logger.warning(
+            "Rewrite LLM output validation failed for proposal_id=%s: %s",
+            existing_proposal.get("id"),
+            e,
+        )
         return None, f"Validation failed: {e}"
