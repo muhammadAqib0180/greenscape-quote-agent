@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revision History — Proposal #{{ proposal_id }} | QuoteFlow Pro</title>
+  <meta name="description" content="Full AI revision timeline for proposal #{{ proposal_id }} — track every rewrite, scope change, and subtotal delta." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --green: #3fb950;
+      --green-dim: #238636;
+      --red: #f85149;
+      --red-dim: #da3633;
+      --yellow: #d29922;
+      --blue: #58a6ff;
+      --purple: #bc8cff;
+      --accent: #1f6feb;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 80px;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a2233 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .logo {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 18px; color: var(--text);
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #238636, #3fb950);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .breadcrumb a { color: var(--blue); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { color: var(--border); }
+
+    /* ── Layout ── */
+    .container { max-width: 920px; margin: 0 auto; padding: 40px 24px; }
+
+    .page-title {
+      font-size: 28px; font-weight: 700; color: var(--text);
+      margin-bottom: 6px;
+    }
+    .page-subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+
+    /* ── Proposal summary card ── */
+    .proposal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 36px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .proposal-card-info { display: flex; flex-direction: column; gap: 4px; }
+    .proposal-card-name { font-size: 18px; font-weight: 600; }
+    .proposal-card-meta { font-size: 13px; color: var(--text-muted); }
+    .proposal-card-subtotal {
+      font-size: 22px; font-weight: 700; color: var(--green);
+    }
+    .proposal-card-subtotal.needs-render { color: var(--yellow); }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 12px; font-weight: 500;
+    }
+    .badge-draft    { background: rgba(88,166,255,.15); color: var(--blue); }
+    .badge-approved { background: rgba(63,185,80,.15);  color: var(--green); }
+    .badge-rejected { background: rgba(248,81,73,.15);  color: var(--red); }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center; padding: 80px 24px;
+      background: var(--surface); border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    .empty-desc  { font-size: 14px; color: var(--text-muted); max-width: 420px; margin: 0 auto 24px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 8px; font-size: 14px;
+      font-weight: 500; cursor: pointer; text-decoration: none;
+      transition: all .15s;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff; border: none;
+    }
+    .btn-primary:hover { background: #388bfd; }
+    .btn-secondary {
+      background: var(--surface-2); color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 28px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--purple), transparent);
+    }
+
+    .revision-card {
+      position: relative;
+      margin-left: 64px;
+      margin-bottom: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .revision-card:hover { border-color: var(--accent); }
+
+    .timeline-dot {
+      position: absolute;
+      left: -50px; top: 24px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: #fff;
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .revision-header {
+      padding: 16px 20px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 12px; border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(31,111,235,.05), transparent);
+    }
+    .revision-number {
+      font-size: 11px; font-weight: 600; color: var(--blue);
+      text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px;
+    }
+    .revision-instructions {
+      font-size: 14px; font-weight: 500; color: var(--text);
+      font-style: italic; line-height: 1.5;
+    }
+    .revision-meta {
+      text-align: right; flex-shrink: 0;
+      font-size: 12px; color: var(--text-muted);
+    }
+    .revision-timestamp { margin-bottom: 4px; }
+
+    .revision-body { padding: 16px 20px; }
+
+    /* ── Subtotal delta ── */
+    .subtotal-row {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .subtotal-item { display: flex; flex-direction: column; gap: 2px; }
+    .subtotal-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+    .subtotal-value { font-size: 18px; font-weight: 700; }
+    .subtotal-prev { color: var(--text-muted); }
+    .subtotal-new  { color: var(--green); }
+    .subtotal-arrow { font-size: 20px; color: var(--border); }
+    .delta {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 6px;
+      font-size: 14px; font-weight: 600;
+    }
+    .delta-positive { background: rgba(63,185,80,.15); color: var(--green); }
+    .delta-negative { background: rgba(248,81,73,.15);  color: var(--red); }
+    .delta-neutral  { background: rgba(139,148,158,.1); color: var(--text-muted); }
+
+    /* ── Diff pills ── */
+    .diff-section { margin-top: 12px; }
+    .diff-title {
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px;
+    }
+    .diff-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .diff-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px; font-size: 12px;
+    }
+    .pill-added    { background: rgba(63,185,80,.12);  color: var(--green); border: 1px solid rgba(63,185,80,.3); }
+    .pill-removed  { background: rgba(248,81,73,.12);  color: var(--red);   border: 1px solid rgba(248,81,73,.3); }
+    .pill-modified { background: rgba(210,153,34,.12); color: var(--yellow);border: 1px solid rgba(210,153,34,.3); }
+
+    /* ── Actions strip ── */
+    .actions {
+      margin-top: 36px;
+      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .revision-header { flex-direction: column; }
+      .revision-meta { text-align: left; }
+      .subtotal-row { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <a class="logo" href="/">
+        <span class="logo-icon">🌿</span>
+        QuoteFlow Pro
+      </a>
+      <nav class="breadcrumb">
+        <span class="breadcrumb-sep">/</span>
+        <a href="/proposals">Proposals</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>#{{ proposal_id }}</span>
+        <span class="breadcrumb-sep">/</span>
+        <span>Revision History</span>
+      </nav>
+    </div>
+    <a href="/proposals" class="btn btn-secondary">← Back to Proposals</a>
+  </header>
+
+  <div class="container">
+
+    <!-- Page title -->
+    <h1 class="page-title">🔄 AI Revision History</h1>
+    <p class="page-subtitle">
+      Every AI-driven rewrite applied to Proposal #{{ proposal_id }} — with structured diffs
+      showing exactly which line items changed.
+    </p>
+
+    <!-- Proposal summary card -->
+    <div class="proposal-card">
+      <div class="proposal-card-info">
+        <div class="proposal-card-name">{{ proposal.get("client_name", "Unknown Client") }}</div>
+        <div class="proposal-card-meta">
+          <span class="badge badge-{{ proposal.get('status', 'draft') }}">
+            {{ proposal.get("status", "draft").title() }}
+          </span>
+          &nbsp;·&nbsp;
+          {{ revision_history | length }} revision{% if revision_history | length != 1 %}s{% endif %} applied
+          &nbsp;·&nbsp;
+          Created {{ proposal.get("created_at", "")[:10] }}
+        </div>
+      </div>
+      <div class="proposal-card-subtotal {% if proposal.get('needs_render') %}needs-render{% endif %}">
+        ${{ "%.2f" | format(proposal.get("subtotal") or 0) }}
+        {% if proposal.get("needs_render") %}
+          <span style="font-size:12px; color:var(--yellow); margin-left:6px">🎨 Render required</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    {% if not revision_history %}
+    <div class="empty-state">
+      <div class="empty-icon">🤖</div>
+      <div class="empty-title">No revisions yet</div>
+      <p class="empty-desc">
+        Use the AI Rewrite Engine via the REST API (<code>POST /api/v1/proposals/{{ proposal_id }}/rewrite</code>)
+        to apply scope changes. Every rewrite is tracked here with a full diff.
+      </p>
+      <a href="/docs#/Proposals%20%26%20Catalog%20API/rewrite_proposal_api_v1_proposals__proposal_id__rewrite_post"
+         class="btn btn-primary" target="_blank" rel="noopener">
+        🚀 Open Swagger Docs
+      </a>
+    </div>
+    {% else %}
+
+    <!-- Timeline -->
+    <div class="timeline">
+      {% for rev in revision_history | reverse %}
+      {% set delta = rev.get("subtotal_delta", 0) %}
+      <div class="revision-card">
+
+        <!-- Timeline dot -->
+        <div class="timeline-dot">{{ rev.get("revision_number", loop.index) }}</div>
+
+        <!-- Card header -->
+        <div class="revision-header">
+          <div>
+            <div class="revision-number">Revision #{{ rev.get("revision_number", loop.index) }}</div>
+            <div class="revision-instructions">"{{ rev.get("instructions", "") }}"</div>
+          </div>
+          <div class="revision-meta">
+            <div class="revision-timestamp">
+              🕐 {{ rev.get("revised_at", "")[:19].replace("T", " ") }} UTC
+            </div>
+          </div>
+        </div>
+
+        <!-- Card body -->
+        <div class="revision-body">
+
+          <!-- Subtotal delta row -->
+          <div class="subtotal-row">
+            <div class="subtotal-item">
+              <span class="subtotal-label">Before</span>
+              <span class="subtotal-value subtotal-prev">
+                ${{ "%.2f" | format(rev.get("previous_subtotal", 0)) }}
+              </span>
+            </div>
+            <span class="subtotal-arrow">→</span>
+            <div class="subtotal-item">
+              <span class="subtotal-label">After</span>
+              <span class="subtotal-value subtotal-new">
+                ${{ "%.2f" | format(rev.get("new_subtotal", 0)) }}
+              </span>
+            </div>
+            <div class="subtotal-item">
+              <span class="subtotal-label">Delta</span>
+              <span class="delta {% if delta > 0 %}delta-positive{% elif delta < 0 %}delta-negative{% else %}delta-neutral{% endif %}">
+                {% if delta > 0 %}▲ +${{ "%.2f" | format(delta) }}
+                {% elif delta < 0 %}▼ -${{ "%.2f" | format(delta | abs) }}
+                {% else %}= No change{% endif %}
+              </span>
+            </div>
+          </div>
+
+          <!-- Item-level diffs -->
+          {% set added   = rev.get("added_items", []) %}
+          {% set removed = rev.get("removed_items", []) %}
+          {% set modified = rev.get("modified_items", []) %}
+
+          {% if added or removed or modified %}
+          <div class="diff-section">
+            <div class="diff-title">Line Item Changes</div>
+            <div class="diff-pills">
+              {% for item in added %}
+                <span class="diff-pill pill-added">+ {{ item }}</span>
+              {% endfor %}
+              {% for item in removed %}
+                <span class="diff-pill pill-removed">− {{ item }}</span>
+              {% endfor %}
+              {% for item in modified %}
+                <span class="diff-pill pill-modified">~ {{ item }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% else %}
+          <div style="font-size:13px;color:var(--text-muted);margin-top:8px;">
+            No item-level changes detected (subtotal may differ due to quantity adjustments).
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="actions">
+      <a href="/proposals" class="btn btn-secondary">← All Proposals</a>
+      <a href="/proposals/{{ proposal_id }}/download-pdf" class="btn btn-secondary">📄 Download PDF</a>
+      <a href="/docs#/Proposals%20%26%20Catalog%20API/rewrite_proposal_api_v1_proposals__proposal_id__rewrite_post"
+         class="btn btn-primary" target="_blank" rel="noopener">
+        🤖 Apply AI Rewrite
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>
